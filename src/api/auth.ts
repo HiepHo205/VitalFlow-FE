@@ -1,9 +1,12 @@
 import api from "@/lib/axios";
 
+import type { ApiResource } from "@/types/api";
+import type { AuthToken, User } from "@/types/auth";
+
 export const login = (payload: {
   email: string;
   password: string;
-}) => api.post("/auth/login", payload);
+}) => api.post<ApiResource<AuthToken>>("/auth/login", payload);
 
 export interface RegisterPayload {
   full_name: string;
@@ -25,7 +28,7 @@ export interface RegisterPayload {
 export const register = async (
   payload: RegisterPayload
 ) => {
-  const response = await api.post(
+  const response = await api.post<ApiResource<AuthToken>>(
     "/auth/register",
     payload
   );
@@ -33,10 +36,11 @@ export const register = async (
   return response.data;
 };
 
-export const me = () => api.get("/auth/me");
+export const me = () => api.get<ApiResource<User>>("/auth/me");
 
 export const logout = () => api.post("/auth/logout");
 
-export const refresh = () => api.post("/auth/refresh");
+export const refresh = () =>
+  api.post<ApiResource<AuthToken>>("/auth/refresh");
 
 
