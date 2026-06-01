@@ -1,67 +1,120 @@
 <script setup lang="ts">
 defineProps<{
   totalRoutines: number;
+  completedTasks: number;
+  totalTasks: number;
+  averageEnergy: number;
+  averageSleep: number;
 }>();
 </script>
 
 <template>
   <div
-    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
+    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5"
   >
+    <!-- Total Routines -->
     <div
-      class="bg-white rounded-2xl shadow p-5"
+      class="rounded-3xl bg-black text-white p-6"
     >
-      <p class="text-sm text-gray-500">
+      <p
+        class="text-sm text-gray-300"
+      >
         Total Routines
       </p>
 
-      <h3
-        class="text-3xl font-bold mt-2"
+      <h2
+        class="text-4xl font-bold mt-3"
       >
         {{ totalRoutines }}
-      </h3>
-    </div>
+      </h2>
 
-    <div
-      class="bg-white rounded-2xl shadow p-5"
-    >
-      <p class="text-sm text-gray-500">
-        Energy Level
-      </p>
-
-      <h3
-        class="text-3xl font-bold mt-2"
+      <div
+        class="mt-6 text-xs text-gray-400"
       >
-        80%
-      </h3>
+        Active routines
+      </div>
     </div>
 
+    <!-- Energy -->
     <div
-      class="bg-white rounded-2xl shadow p-5"
+      class="rounded-3xl border bg-white p-6"
     >
-      <p class="text-sm text-gray-500">
+      <div
+        class="flex items-center justify-between"
+      >
+        <p
+          class="text-sm text-gray-500"
+        >
+          Average Energy
+        </p>
+
+        <div
+          class="w-3 h-3 rounded-full bg-green-500"
+        />
+      </div>
+
+      <h2
+        class="text-4xl font-bold mt-3"
+      >
+        {{ averageEnergy }}%
+      </h2>
+
+      <div
+        class="mt-6 h-2 rounded-full bg-gray-100 overflow-hidden"
+      >
+        <div
+          class="h-full bg-green-500 transition-all"
+          :style="{
+            width: `${averageEnergy}%`,
+          }"
+        />
+      </div>
+    </div>
+
+    <!-- Completed Tasks -->
+    <div
+      class="rounded-3xl border bg-white p-6"
+    >
+      <p
+        class="text-sm text-gray-500"
+      >
         Completed Tasks
       </p>
 
-      <h3
-        class="text-3xl font-bold mt-2"
+      <h2
+        class="text-4xl font-bold mt-3"
       >
-        5/8
-      </h3>
+        {{ completedTasks }}/{{ totalTasks }}
+      </h2>
+
+      <p
+        class="text-sm text-gray-400 mt-6"
+      >
+        Tasks finished today
+      </p>
     </div>
 
+    <!-- Sleep -->
     <div
-      class="bg-white rounded-2xl shadow p-5"
+      class="rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-6"
     >
-      <p class="text-sm text-gray-500">
-        Sleep Hours
+      <p
+        class="text-sm text-indigo-100"
+      >
+        Average Sleep
       </p>
 
-      <h3
-        class="text-3xl font-bold mt-2"
+      <h2
+        class="text-4xl font-bold mt-3"
       >
-        7.5h
-      </h3>
+        {{ averageSleep }}h
+      </h2>
+
+      <p
+        class="text-sm mt-6 text-indigo-100"
+      >
+        Healthy sleep routine
+      </p>
     </div>
   </div>
 </template>

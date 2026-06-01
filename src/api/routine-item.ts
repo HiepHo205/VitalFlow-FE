@@ -1,10 +1,13 @@
 import api from "@/lib/axios";
 
+import type { ApiResource } from "@/types/api";
+import type { RoutineItem, RoutineItemFormData } from "@/types/routine";
+
 export const createRoutineItem = (
   routineId: string,
-  payload: any
+  payload: RoutineItemFormData
 ) => {
-  return api.post(
+  return api.post<ApiResource<RoutineItem>>(
     `/routines/${routineId}/items`,
     payload
   );
@@ -13,9 +16,9 @@ export const createRoutineItem = (
 export const updateRoutineItem = (
   routineId: string,
   itemId: string,
-  payload: any
+  payload: RoutineItemFormData
 ) => {
-  return api.put(
+  return api.put<ApiResource<RoutineItem>>(
     `/routines/${routineId}/items/${itemId}`,
     payload
   );

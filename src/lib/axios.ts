@@ -1,5 +1,54 @@
 import axios from "axios";
 
+import type {
+  AxiosError,
+  InternalAxiosRequestConfig,
+} from "axios";
+
+import type { ApiResource } from "@/types/api";
+import type { AuthToken } from "@/types/auth";
+
+interface RetryableRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
+let refreshRequest: Promise<string> | null = null;
+
+const refreshAccessToken = async () => {
+  const token =
+    localStorage.getItem(
+      "access_token"
+    );
+
+  if (!token) {
+    throw new Error(
+      "No access token available for refresh."
+    );
+  }
+
+  const refreshResponse =
+    await axios.post<ApiResource<AuthToken>>(
+      `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+  const newToken =
+    refreshResponse.data.data
+      .access_token;
+
+  localStorage.setItem(
+    "access_token",
+    newToken
+  );
+
+  return newToken;
+};
+
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_BASE_URL,
@@ -28,41 +77,29 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
 
-  async (error) => {
+  async (error: AxiosError) => {
     const originalRequest =
-      error.config;
+      error.config as
+        | RetryableRequestConfig
+        | undefined;
 
     if (
       error.response?.status === 401 &&
+      originalRequest &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
 
       try {
-        const token =
-          localStorage.getItem(
-            "access_token"
-          );
-
-        const refreshResponse =
-          await axios.post(
-            `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+        refreshRequest ??=
+          refreshAccessToken().finally(
+            () => {
+              refreshRequest = null;
             }
           );
 
         const newToken =
-          refreshResponse.data.data
-            .access_token;
-
-        localStorage.setItem(
-          "access_token",
-          newToken
-        );
+          await refreshRequest;
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
 
