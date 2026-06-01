@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { RoutineItemFormData } from "@/types/routine";
+
 defineProps<{
-  item: any;
+  item: RoutineItemFormData;
   index: number;
 }>();
 
@@ -34,7 +36,6 @@ const emit = defineEmits<{
         v-model="item.title"
         type="text"
         class="w-full border rounded-lg px-4 py-2"
-        placeholder="Meditation"
         required
       />
     </div>
@@ -44,9 +45,9 @@ const emit = defineEmits<{
         Description
       </label>
 
-      <input
+      <textarea
         v-model="item.description"
-        type="text"
+        rows="3"
         class="w-full border rounded-lg px-4 py-2"
       />
     </div>
@@ -83,6 +84,10 @@ const emit = defineEmits<{
         <option value="sleep">
           Sleep
         </option>
+
+        <option value="morning">
+          Morning
+        </option>
       </select>
     </div>
 
@@ -112,28 +117,32 @@ const emit = defineEmits<{
       </div>
     </div>
 
-    <div>
-      <label class="block text-sm mb-1">
-        Duration
-      </label>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm mb-1">
+          Duration (minutes)
+        </label>
 
-      <input
-        v-model="item.duration_minutes"
-        type="number"
-        class="w-full border rounded-lg px-4 py-2"
-      />
-    </div>
+        <input
+          v-model="item.duration_minutes"
+          type="number"
+          class="w-full border rounded-lg px-4 py-2"
+        />
+      </div>
 
-    <div>
-      <label class="block text-sm mb-1">
-        Priority
-      </label>
+      <div>
+        <label class="block text-sm mb-1">
+          Priority
+        </label>
 
-      <input
-        v-model="item.priority"
-        type="number"
-        class="w-full border rounded-lg px-4 py-2"
-      />
+        <input
+          v-model="item.priority"
+          type="number"
+          min="1"
+          max="5"
+          class="w-full border rounded-lg px-4 py-2"
+        />
+      </div>
     </div>
 
     <div>
